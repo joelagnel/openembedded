@@ -785,50 +785,113 @@ def subprocess_setup():
 	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 def oe_unpack_file(file, destdir, **options):
-	import subprocess, shutil
+    import subprocess, shutil, tarfile, zipfile, gzip, bz2
+    from StringIO import StringIO
 
-	dest = os.path.join(destdir, os.path.basename(file))
-	if os.path.exists(dest):
-		if os.path.samefile(file, dest):
-			return True
+    dest = os.path.join(destdir, os.path.basename(file))
+    if os.path.exists(dest):
+        if os.path.samefile(file, dest):
+            return True
 
-	cmd = None
-	if file.endswith('.tar'):
-		cmd = 'tar x --no-same-owner -f %s' % file
-	elif file.endswith('.tgz') or file.endswith('.tar.gz') or file.endswith('.tar.Z'):
-		cmd = 'tar xz --no-same-owner -f %s' % file
-	elif file.endswith('.tbz') or file.endswith('.tbz2') or file.endswith('.tar.bz2'):
-		cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % file
-	elif file.endswith('.gz') or file.endswith('.Z') or file.endswith('.z'):
-		base, ext = os.path.splitext(file)
-		cmd = 'gzip -dc %s > %s' % (file, base)
-	elif file.endswith('.bz2'):
-		base, ext = os.path.splitext(file)
-		cmd = 'bzip2 -dc %s > %s' % (file, base)
-	elif file.endswith('.tar.xz'):
-		cmd = 'xz -dc %s | tar x --no-same-owner -f -' % file
-	elif file.endswith('.xz'):
-		base, ext = os.path.splitext(file)
-		cmd = 'xz -dc %s > %s' % (file, base)
-	elif file.endswith('.zip') or file.endswith('.jar'):
-		cmd = 'unzip -q -o'
-		if 'dos' in options:
-			cmd = '%s -a' % cmd
-		cmd = "%s '%s'" % (cmd, file)
-	elif os.path.isdir(file):
-		shutil.rmtree(dest, True)
-		shutil.copytree(file, dest, True)
-	else:
-		if not 'patch' in options:
-			shutil.copy2(file, dest)
+    class ZipHandler(zipfile.ZipFile):
+        def __init__(self, filename):
+            self.filename = filename
+            zipfile.ZipFile.__init__(self, filename)
 
-	if not cmd:
-		return True
+        def __iter__(self):
+            return iter(self.namelist())
 
-	ret = subprocess.call(cmd, preexec_fn=subprocess_setup, shell=True,
-                              cwd=destdir, env=options.get("env"))
+        if not getattr(zipfile.ZipFile, "extract", None):
+            def extract(self, member, path = '.'):
+                if isinstance(member, zipfile.ZipInfo):
+                    name = member.filename
+                else:
+                    name = member
+                    member = self.getinfo(name)
 
-	return ret == 0
+                outpath = os.path.normpath(os.path.join(path, name))
+                if not outpath.startswith(os.path.abspath(path)):
+                    bb.fatal("Denied path for zip file member: %s" % name)
+
+                if name.endswith("/"):
+                    bb.mkdirhier(outpath)
+                else:
+                    bb.mkdirhier(os.path.dirname(outpath))
+                    data = self.read(name)
+                    open(outpath, "w").write(data)
+
+            def extractall(self, path = '.'):
+                for member in self:
+                    self.extract(member, path)
+
+    class OneFileHandler(object):
+        def __init__(self, filename, extension):
+            base, ext = os.path.splitext(filename)
+            if ext == extension:
+                self.outfile = os.path.basename(base)
+            else:
+                self.outfile = "%s.uncompressed" % os.path.basename(filename)
+
+        def __iter__(self):
+            yield self.outfile
+
+        def extract(self, member, path = '.'):
+            outpath = os.path.join(path, self.outfile)
+            open(outpath, "wb").write(self.file.read())
+
+        def extractall(self, path = '.'):
+            self.extract(self.outfile, path)
+
+    class BZ2Handler(OneFileHandler):
+        def __init__(self, filename):
+            self.file = bz2.BZ2File(filename)
+            OneFileHandler.__init__(self, filename, ".bz2")
+
+    class GZipHandler(OneFileHandler):
+        def __init__(self, filename):
+            self.file = gzip.open(filename)
+            OneFileHandler.__init__(self, filename, ".gz")
+
+    class XZHandler(OneFileHandler):
+        def __init__(self, filename):
+            self.pipe = subprocess.Popen(["xz", "-dc", filename], stdout = subprocess.PIPE)
+            OneFileHandler.__init__(self, filename, ".xz")
+
+        def extract(self, member, path='.'):
+            self.pipe.wait()
+            self.file = self.pipe.stdout
+            OneFileHandler.extract(self, member, path)
+
+    def TarXZHandler(filename):
+        pipe = subprocess.Popen(["xz", "-dc", filename], stdout = subprocess.PIPE)
+        pipe.wait()
+        return tarfile.TarFile(filename, fileobj = StringIO(pipe.stdout.read()))
+
+    handlers = (
+        (("tar.gz", "tgz", "tar.Z"), tarfile.TarFile.gzopen),
+        (("tar.bz2", "tbz", "tbz2"), tarfile.TarFile.bz2open),
+        (["tar.xz", "txz"], TarXZHandler),
+        (["tar"], tarfile.TarFile.open),
+        (("zip", "jar"), ZipHandler),
+        (("gz", "Z", "z"), GZipHandler),
+        (["bz2"], BZ2Handler),
+        (["xz"], XZHandler),
+    )
+
+
+    for ext, func in ((ext, func) for exts, func in handlers
+                                  for ext in exts):
+        if file.endswith(".%s" % ext):
+            archive = func(file)
+            archive.extractall(destdir)
+            break
+    else:
+        dest = os.path.join(destdir, os.path.basename(file))
+        if os.path.isdir(file):
+            shutil.rmtree(dest, True)
+            shutil.copytree(file, dest, True)
+        elif not "patch" in options:
+            shutil.copy2(file, dest)
 
 addtask unpack after do_fetch
 do_unpack[dirs] = "${WORKDIR}"
