@@ -2,6 +2,7 @@
 #gives you a gateway with SMB, ssh and dnsmasqs
 
 SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
+SPLASH[varrefs] += "MACHINE_FEATURES"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 DISTRO_SSH_DAEMON ?= "dropbear"

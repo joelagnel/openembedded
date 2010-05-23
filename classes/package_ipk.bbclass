@@ -308,6 +308,16 @@ python do_package_ipk () {
 		bb.utils.prunedir(controldir)
 		bb.utils.unlockfile(lf)
 }
+__PKGVARS = "ALLOW_EMPTY PE PKGV PKGR DESCRIPTION PRIORITY \
+             SECTION MAINTAINER LICENSE PACKAGE_ARCH PN HOMEPAGE \
+             CONFFILES RDEPENDS RRECOMMENDS RSUGGESTS RREPLACES RCONFLICTS"
+do_package_ipk[varrefs] += "pkg_preinst pkg_postinst pkg_prerm pkg_postrm \
+                            ${@' '.join('pkg_%s_%s' % (script, pkg) for pkg in '${PACKAGES}'.split() \
+                                                                    for script in ('preinst', 'postinst', \
+                                                                                   'prerm', 'postrm'))} \
+                            ${__PKGVARS} \
+                            ${@' '.join('%s_%s' % (pkgvar, pkg) for pkg in '${PACKAGES}'.split() \
+                                                                for pkgvar in '${__PKGVARS}'.split())}"
 
 python () {
     if bb.data.getVar('PACKAGES', d, True) != '':

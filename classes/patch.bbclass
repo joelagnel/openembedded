@@ -116,6 +116,7 @@ python patch_do_patch() {
 }
 
 addtask patch after do_unpack
+do_patch[varrefs] += "${FETCH_VARREFS} QUILTRCFILE"
 do_patch[dirs] = "${WORKDIR}"
 do_patch[depends] = "${PATCHDEPENDENCY}"
 

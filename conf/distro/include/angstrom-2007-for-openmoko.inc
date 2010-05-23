@@ -200,6 +200,7 @@ require conf/distro/include/angstrom${ARM_ABI}.inc
 # We want to ship extra debug utils in the rootfs when doing a debug build 
 DEBUG_APPS ?= ""
 DEBUG_APPS += '${@base_conditional("DISTRO_TYPE", "release", "", "strace procps",d)}'
+DEBUG_APPS[varrefs] += "DISTRO_TYPE"
 
 #this should go away soon
 EXTRA_STUFF ?= ""
@@ -222,6 +223,7 @@ DISTRO_EXTRA_RDEPENDS += "\
     ${EXTRA_STUFF} \
     ${DEBUG_APPS} \
     "
+DISTRO_EXTRA_RDEPENDS[varrefs] += "MACHINE_FEATURES"
 
 DISTRO_EXTRA_RRECOMMENDS += " \
     kernel-module-vfat \

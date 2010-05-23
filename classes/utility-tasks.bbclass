@@ -53,6 +53,7 @@ python do_mrproper() {
 addtask distclean
 do_distclean[dirs] = "${TOPDIR}"
 do_distclean[nostamp] = "1"
+do_distclean[varrefs] += "DL_DIR"
 python do_distclean() {
 	"""clear downloaded sources, build and temp directories"""
 

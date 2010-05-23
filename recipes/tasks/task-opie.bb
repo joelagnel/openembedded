@@ -18,6 +18,7 @@ PACKAGES = "task-opie-base \
   ${@base_contains("COMBINED_FEATURES", "bluetooth", "task-opie-bluetooth", "",d)} \
   ${@base_contains("COMBINED_FEATURES", "irda", "task-opie-irda", "",d)} \
            "
+PACKAGES[varrefs] += "COMBINED_FEATURES"
 
 RDEPENDS_task-opie-everything := "${PACKAGES}"
 
@@ -46,6 +47,7 @@ RDEPENDS_task-opie-base-applets = "opie-aboutapplet opie-clockapplet opie-suspen
     ${@base_contains("MACHINE_FEATURES", "apm", "opie-batteryapplet", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "opie-cardapplet", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "opie-vtapplet opie-logoutapplet", "",d)}"
+RDEPENDS_task-opie-base-applets[varrefs] += "COMBINED_FEATURES MACHINE_FEATURES"
 
 PACKAGE_ARCH_task-opie-base-applets = "${MACHINE_ARCH}"
 
@@ -73,6 +75,7 @@ RDEPENDS_task-opie-extra-settings = "opie-language opie-doctab opie-mediummount 
     ${@base_contains("DISTRO_FEATURES", "wifi", "opie-networksettings-wlanplugin", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "opie-networksettings-pppplugin", "",d)} \
 			    "
+RDEPENDS_task-opie-extra-settings[varrefs] += "DISTRO_FEATURES"
 
 PACKAGE_ARCH_task-opie-extra-settings = "${MACHINE_ARCH}"
 

@@ -47,6 +47,7 @@ python do_emit_data () {
 
     pickle.dump(data, open(outfile, "wb"))
 }
+do_emit_data[varrefs] = "*"
 do_emit_data[nostamp] = "1"
 addtask emit_data
 

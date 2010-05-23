@@ -70,6 +70,7 @@ RDEPENDS_gpephone-task-base = "\
     ptim-engine \
     ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus xtscal", "",d)} \
 "
+RDEPENDS_gpephone-task-base[varrefs] += "MACHINE_FEATURES"
 
 RDEPENDS_gpephone-task-pim = "\
      gpesyncd"

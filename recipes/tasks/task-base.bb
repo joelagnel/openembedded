@@ -44,6 +44,7 @@ PACKAGES = ' \
             \
             ${@base_contains("MACHINE_FEATURES","kernel26","task-base-kernel26","task-base-kernel24",d)} \
             '
+PACKAGES[varrefs] += "MACHINE_FEATURES DISTRO_FEATURES"
 
 #
 # packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
@@ -54,6 +55,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # linux-hotplug or none
 #
 HOTPLUG ?= "${@base_contains("MACHINE_FEATURES", "kernel24",  "linux-hotplug","",d)} "
+HOTPLUG[varrefs] += "MACHINE_FEATURES"
 
 #
 # dropbear, openssh or none
@@ -76,6 +78,7 @@ DISTRO_BLUETOOTH_MANAGER ?= "\
 # pcmciautils for >= 2.6.13-rc1, pcmcia-cs for others
 #
 PCMCIA_MANAGER ?= "${@base_contains('MACHINE_FEATURES', 'kernel26','pcmciautils','pcmcia-cs',d)} "
+PCMCIA_MANAGER[varrefs] += "MACHINE_FEATURES"
 
 #
 # those ones can be set in machine config to supply packages needed to get machine booting
@@ -120,6 +123,7 @@ RDEPENDS_task-base = "\
     ${@base_contains('DISTRO_FEATURES', 'ppp', 'task-base-ppp', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'raid', 'task-base-raid', '',d)} \
     "
+RDEPENDS_task-base[varrefs] += "MACHINE_FEATURES COMBINED_FEATURES DISTRO_FEATURES"
 
 RDEPENDS_task-base-extended = "\
     task-base \
@@ -198,6 +202,7 @@ RDEPENDS_task-base-apm = "\
     ${DISTRO_APM} \
     apmd \
     ${@base_contains('MACHINE_FEATURES', 'kernel24', 'network-suspend-scripts', '',d)}"
+RDEPENDS_task-base-apm[varrefs] += "MACHINE_FEATURES"
 
 RDEPENDS_task-base-ext2 = "\
     hdparm \
@@ -228,6 +233,7 @@ RDEPENDS_task-base-pcmcia = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism-firmware', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'spectrum-fw', '',d)} \
     "
+RDEPENDS_task-base-pcmcia[varrefs] += "DISTRO_FEATURES"
 
 RRECOMMENDS_task-base-pcmcia = "\
     ${@base_contains('MACHINE_FEATURES', 'kernel26', '${task-base-pcmcia26}', '${task-base-pcmcia24}',d)} \
@@ -238,6 +244,7 @@ RRECOMMENDS_task-base-pcmcia = "\
     kernel-module-ide-cs \
     kernel-module-ide-disk \
     "
+RRECOMMENDS_task-base-pcmcia[varrefs] += "MACHINE_FEATURES"
 
 task-base-pcmcia24 = "\
     "
@@ -245,6 +252,7 @@ task-base-pcmcia24 = "\
 task-base-pcmcia26 = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-hostap-cs', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-spectrum-cs', '',d)}"
+task-base-pcmcia26[varrefs] += "DISTRO_FEATURES"
 
 # Provide bluez-utils-compat utils for the time being, the binaries in that package will vanish soon from upstream releases, so beware! 
 
@@ -268,6 +276,7 @@ RRECOMMENDS_task-base-bluetooth = "\
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-dtl1-cs', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'bluez-dtl1-workaround', '',d)} \
     "
+RRECOMMENDS_task-base-bluetooth[varrefs] += "COMBINED_FEATURES"
 # bluez-dtl1-workaround above is workaround for bitbake not handling DEPENDS on it in
 # kernel.bbclass. It should be there as long as kernel-module-dtl1-cs is, but not longer.
 
@@ -286,6 +295,7 @@ RRECOMMENDS_task-base-irda = "\
     kernel-module-irtty-sir \
     kernel-module-sir-dev \
     ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-ir-usb', '',d)} "
+RRECOMMENDS_task-base-irda[varrefs] += "COMBINED_FEATURES DISTRO_FEATURES"
 
 RRECOMMENDS_task-base-usbgadget = "\
     kernel-module-pxa27x_udc \
@@ -348,6 +358,7 @@ RDEPENDS_task-base-wifi = "\
     ${@base_contains('COMBINED_FEATURES', 'hostap', 'hostap-utils', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'madwifi', 'madwifi-ng-tools', '',d)} \
     wpa-supplicant"
+RDEPENDS_task-base-wifi[varrefs] += "COMBINED_FEATURES"
 
 RRECOMMENDS_task-base-wifi = "\
     ${@base_contains('COMBINED_FEATURES', 'madwifi', 'madwifi-ng-modules', '',d)} \
@@ -362,6 +373,7 @@ RRECOMMENDS_task-base-wifi = "\
     kernel-module-cryptomgr \
     kernel-module-michael-mic \
     kernel-module-aes"
+RRECOMMENDS_task-base-wifi[varrefs] += "COMBINED_FEATURES"
 
 RRECOMMENDS_task-base-smbfs = "\
     kernel-module-cifs \

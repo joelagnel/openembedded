@@ -9,6 +9,7 @@ PR = "r2"
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
 MY_ARCH := "${PACKAGE_ARCH}"
 PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'madwifi', '${MACHINE_ARCH}', '${MY_ARCH}', d)}"
+PACKAGE_ARCH[varrefs] += "COMBINED_FEATURES"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-gnutls \
@@ -25,6 +26,7 @@ RREPLACES_${PN} = "wpa-supplicant-cli"
 RRECOMMENDS_${PN} = "wpa-supplicant-passphrase"
 
 export HAS_MADWIFI = "${@base_contains('COMBINED_FEATURES', 'madwifi', 1, 0,d)}"
+HAS_MADWIFI[varrefs] += "COMBINED_FEATURES"
 
 do_configure () {
         install -m 0755 ${WORKDIR}/defconfig-gnutls  .config

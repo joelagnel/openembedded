@@ -16,6 +16,7 @@ ANGSTROM_EXTRA_INSTALL ?= ""
 DISTRO_SSH_DAEMON ?= "dropbear"
 XSERVER ?= "xserver-kdrive-fbdev"
 SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
+SPLASH[varrefs] += "MACHINE_FEATURES"
 
 # Install "big" X if the target has a screen
 GUIPACKAGES_BIGX = " \
@@ -26,6 +27,7 @@ GUIPACKAGES_BIGX = " \
         ${@base_contains("COMBINED_FEATURES", "usbhost", "xf86-video-sisusb", "",d)} \
         xf86-video-vesa \
 "
+GUIPACKAGES_BIGX[varrefs] += "COMBINED_FEATURES"
 
 GUIPACKAGES = " \
 	${XSERVER} \
@@ -46,6 +48,7 @@ IMAGE_INSTALL = " task-base-extended \
 	${ANGSTROM_EXTRA_INSTALL} \
         ${SPLASH} \
 "
+IMAGE_INSTALL[varrefs] += "MACHINE_FEATURES"
 
 inherit image
 

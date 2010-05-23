@@ -4,6 +4,7 @@ ANGSTROM_EXTRA_INSTALL += " \
 			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
 SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
+SPLASH[varrefs] += "MACHINE_FEATURES"
 
 export IMAGE_BASENAME = "x11-pimlico-image"
 

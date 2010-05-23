@@ -190,6 +190,7 @@ def staging_fetch(stagepkg, d):
             bb.fetch.go(pd, [srcuri])
         except:
             return
+staging_fetch[varrefs] += "${FETCH_VARREFS}"
 
 PSTAGE_TASKS_COVERED = "fetch unpack munge patch configure qa_configure rig_locales compile sizecheck install deploy package populate_sysroot package_write_deb package_write_ipk package_write package_stage qa_staging"
 
@@ -498,6 +499,8 @@ python do_package_stage () {
     bb.build.exec_func("staging_package_installer", d)
     bb.utils.unlockfile(lf)
 }
+do_package_stage[varrefs] += "${@' '.join('%s_%s' % (var, pkg) for pkg in '${PACKAGES}'.split() \
+                                                               for var in ('PKG', 'PACKAGE_ARCH'))}"
 
 #
 # Note an assumption here is that do_deploy runs before do_package_write/do_populate_sysroot

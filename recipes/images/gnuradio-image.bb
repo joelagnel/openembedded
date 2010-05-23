@@ -5,6 +5,7 @@ IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 IMAGE_EXTRA_INSTALL ?= ""
 
 ZZAPSPLASH = ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-zap", "",d)}'
+ZZAPSPLASH[varrefs] += "MACHINE_FEATURES"
 
 DEPENDS = "task-base-extended \
            ${SPLASH} \

@@ -32,10 +32,12 @@ EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
                 ${@base_contains('COMBINED_FEATURES', 'pci', '--enable-pci --enable-pci-ids', '--disable-pci --disable-pci-ids',d)} \
                 ${@base_contains('MACHINE_FEATURES', 'acpi', '--enable-acpi', '--disable-acpi',d)} \
                "
+EXTRA_OECONF[varrefs] += "MACHINE_FEATURES COMBINED_FEATURES"
 
 MY_ARCH := "${PACKAGE_ARCH}"
 PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'acpi', '${MACHINE_ARCH}', '${MY_ARCH}',d)}"
 PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}',d)}"
+PACKAGE_ARCH[varrefs] += "MACHINE_FEATURES"
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/default/volatiles

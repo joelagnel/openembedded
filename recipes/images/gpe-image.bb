@@ -9,6 +9,7 @@ GPE_EXTRA_THEMES = "gpe-theme-industrial"
 
 # Select bootsplash 
 SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
+SPLASH[varrefs] += "MACHINE_FEATURES"
 
 # Select some useful things depending on the device capabilities
 

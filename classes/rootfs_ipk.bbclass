@@ -10,6 +10,7 @@ do_rootfs[lockfiles] = "${DEPLOY_DIR_IPK}.lock"
 
 IPKG_TMP_DIR = "${IMAGE_ROOTFS}-tmp"
 IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} -t ${IPKG_TMP_DIR} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
+IPKG_ARGS[varrefs] += "PACKAGE_INSTALL_NO_DEPS"
 
 PACKAGE_INSTALL_NO_DEPS ?= "0"
 
@@ -25,7 +26,9 @@ BAD_RECOMMENDATIONS ?= ""
 IPKG_VARIANT ?= "opkg"
 
 RDEPENDS_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "${IPKG_VARIANT} opkg-collateral", d)}"
+RDEPENDS[varrefs] += "ONLINE_PACKAGE_MANAGEMENT"
 PACKAGE_INSTALL_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "${IPKG_VARIANT} opkg-collateral", d)}"
+PACKAGE_INSTALL[varrefs] += "ONLINE_PACKAGE_MANAGEMENT"
 
 fakeroot rootfs_ipk_do_rootfs () {
 	set -x

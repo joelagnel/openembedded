@@ -29,3 +29,4 @@ RDEPENDS_task-openmoko-base = "\
   openmoko-today2 \
 #  openmoko-appmanager \
 "
+RDEPENDS_task-openmoko-base[varrefs] += "MACHINE_FEATURES"

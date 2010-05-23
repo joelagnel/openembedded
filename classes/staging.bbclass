@@ -174,6 +174,11 @@ python do_populate_sysroot () {
         os.system(bb.data.expand('cp -pPR ${SYSROOT_DESTDIR}${TMPDIR}/* ${TMPDIR}/', d))
         bb.utils.unlockfile(lock)
 }
+do_populate_sysroot[varrefs] += "${SYSROOT_PREPROCESS_FUNCS} \
+                                 AUTOTOOLS_NATIVE_STAGE_INSTALL \
+                                 NATIVE_INSTALL_WORKS \
+                                 PSTAGE_BROKEN_DESTDIR \
+                                 FORCE_LEGACY_STAGING"
 
 python () {
     if is_legacy_staging(d):

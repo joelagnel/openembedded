@@ -9,7 +9,9 @@ SRC_URI[sha256sum] = "f6c5b44fff5cb602096cc48a1bced426496bc8060463c577a7d86f2e56
 
 
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '', '--disable-intel',d)}"
+EXTRA_OECONF[varrefs] += "MACHINE_FEATURES"
 
 PACKAGES =+ "${@base_contains('MACHINE_FEATURES', 'x86', '${PN}-intel', '',d)}"
+PACKAGES[varrefs] += "MACHINE_FEATURES"
 
 FILES_${PN}-intel = "${libdir}/libdrm_intel.so.*"

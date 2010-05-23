@@ -102,11 +102,16 @@ python base_do_setscene () {
 	if not os.path.exists(bb.data.getVar('STAMP', d, 1) + ".do_setscene"):
 		bb.build.make_stamp("do_setscene", d)
 }
+do_setscene[varrefs] += "${SCENEFUNCS}"
 do_setscene[selfstamp] = "1"
 addtask setscene before do_fetch
 
+FETCH_VARREFS = "MIRRORS PREMIRRORS SRCDATE SRCDATE_${PN} CVSDATE \
+                 CVSDATE_${PN} FILESPATH DL_DIR"
+
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
+do_fetch[varrefs] += "${FETCH_VARREFS}"
 python base_do_fetch() {
 	import sys
 
@@ -249,6 +254,7 @@ def oe_unpack_file(file, data, url = None):
 
 addtask unpack after do_fetch
 do_unpack[dirs] = "${WORKDIR}"
+do_unpack[varrefs] += "${FETCH_VARREFS}"
 python base_do_unpack() {
 	import re
 
@@ -401,6 +407,15 @@ python () {
         depends = bb.data.getVarFlag('do_fetch', 'depends', d) or ""
         depends = depends + " git-native:do_populate_sysroot"
         bb.data.setVarFlag('do_fetch', 'depends', depends, d)
+
+        varrefs = bb.data.getVarFlag('do_fetch', 'varrefs', d) or ""
+        varrefs += " FETCHCMD_git"
+        bb.data.setVarFlag('do_fetch', 'varrefs', varrefs, d)
+
+    if "svn://" in srcuri:
+        varrefs = bb.data.getVarFlag('do_fetch', 'varrefs', d) or ""
+        varrefs += " FETCHCMD_svn"
+        bb.data.setVarFlag('do_fetch', 'varrefs', varrefs, d)
 
     # unzip-native should already be staged before unpacking ZIP recipes
     need_unzip = bb.data.getVar('NEED_UNZIP_FOR_UNPACK', d, 1)

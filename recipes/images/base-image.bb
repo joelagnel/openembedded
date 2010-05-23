@@ -35,6 +35,7 @@ DEPENDS = "\
 	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
 	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
 	"
+DEPENDS[varrefs] += "MACHINE_FEATURES"
 
 IMAGE_INSTALL = "\
 	task-boot \
@@ -44,6 +45,7 @@ IMAGE_INSTALL = "\
 	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
 	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
 	"
+IMAGE_INSTALL[varrefs] += "MACHINE_FEATURES"
 
 export IMAGE_BASENAME = "base-image"
 IMAGE_LINGUAS = ""

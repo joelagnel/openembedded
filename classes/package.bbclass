@@ -516,7 +516,9 @@ python populate_packages () {
 				bb.note("%s contains dangling symlink to %s" % (pkg, l))
 		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 }
+populate_packages[varrefs] += "PKG_* RDEPENDS_* FILES_*"
 populate_packages[dirs] = "${D}"
+
 
 python emit_pkgdata() {
 	from glob import glob
@@ -594,6 +596,14 @@ python emit_pkgdata() {
 		bb.utils.unlockfile(lf)
 }
 emit_pkgdata[dirs] = "${PKGDATA_DIR}/runtime"
+emit_pkgdata[varrefs] += "PN PV PR PKGV PKGR DESCRIPTION RDEPENDS \
+                          RPROVIDES RRECOMMENDS RSUGGESTS RREPLACES \
+                          RCONFLICTS PKG ALLOW_EMPTY FILES pkg_postinst \
+                          pkg_postrm pkg_preinst pkg_prerm"
+emit_pkgdata[varrefs] += "PN_* PV_* PR_* PKGV_* PKGR_* DESCRIPTION_* RDEPENDS_* \
+                          RPROVIDES_* RRECOMMENDS_* RSUGGESTS_* RREPLACES_* \
+                          RCONFLICTS_* PKG_* ALLOW_EMPTY_* FILES_* pkg_postinst_* \
+                          pkg_postrm_* pkg_preinst_* pkg_prerm_*"
 
 ldconfig_postinst_fragment() {
 if [ x"$D" = "x" ]; then
@@ -605,6 +615,7 @@ fi
 
 SHLIBSDIR = "${STAGING_DIR_HOST}/shlibs"
 
+package_do_shlibs[varrefs] += "PKGV_* PV_* pkg_postinst_*"
 python package_do_shlibs() {
 	import re
 
@@ -895,6 +906,7 @@ python read_shlibdeps () {
 					rdepends.append(l.rstrip())
 		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 }
+read_shlibdeps[varrefs] += "${@' '.join('RDEPENDS_%s' % pkg for pkg in '${PACKAGES}'.split())}"
 
 python package_depchains() {
 	"""
@@ -1003,6 +1015,8 @@ python package_depchains() {
 					add_dep(rdeps, dep)
 				pkg_addrrecs(pkg, base, suffix, func, rdeps, d)
 }
+package_depchains[varrefs] += "${@' '.join('RRECOMMENDS_%s' % pkg for pkg in '${PACKAGES}'.split())} \
+                               ${@' '.join('RDEPENDS_%s' % pkg for pkg in '${PACKAGES}'.split())}"
 
 PACKAGE_PREPROCESS_FUNCS ?= ""
 PACKAGEFUNCS ?= "perform_packagecopy \
@@ -1068,6 +1082,7 @@ python package_do_package () {
 		package_run_hooks(f, d)
 }
 do_package[dirs] = "${D}"
+do_package[varrefs] += "${PACKAGEFUNCS}"
 addtask package before do_build after do_install
 
 # Dummy task to mark when all packaging is complete

@@ -31,6 +31,7 @@ RDEPENDS_task-opie-16mb-applets = "opie-aboutapplet opie-clockapplet opie-suspen
     ${@base_contains("MACHINE_FEATURES", "apm", "opie-batteryapplet", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "opie-cardapplet", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "opie-vtapplet opie-logoutapplet", "",d)}"
+RDEPENDS_task-opie-16mb-applets[varrefs] += "MACHINE_FEATURES COMBINED_FEATURES"
 
 PACKAGE_ARCH_task-opie-16mb-applets = "${MACHINE_ARCH}"
 

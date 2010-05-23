@@ -35,6 +35,7 @@ RDEPENDS_task-boot = "\
     ${DISTRO_UPDATE_ALTERNATIVES} \
     ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS} \
     "
+RDEPENDS_task-boot[varrefs] += "MACHINE_FEATURES"
 
 RRECOMMENDS_task-boot = "\
     kernel \

@@ -32,6 +32,7 @@ DEPENDS = "\
 	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
 	task-nas-server-everything \
 	"
+DEPENDS[varrefs] += "MACHINE_FEATURES"
 
 IMAGE_INSTALL_TASKS = "\
 	task-nas-server-everything \
@@ -46,6 +47,7 @@ IMAGE_INSTALL = "\
 	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
 	${IMAGE_INSTALL_TASKS} \
 	"
+IMAGE_INSTALL[varrefs] += "MACHINE_FEATURES"
 
 export IMAGE_BASENAME = "nas-server-image"
 IMAGE_LINGUAS = ""
