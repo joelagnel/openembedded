@@ -1,0 +1,85 @@
+From a990a34f7bb67e0a7542c4b99f8d36603c862807 Mon Sep 17 00:00:00 2001
+From: Chris Larson <chris_larson@mentor.com>
+Date: Tue, 19 Oct 2010 11:16:45 -0700
+Subject: [PATCH] aclocal, automake: Handle relocation
+
+We locate our files relative to the location of the installed aclocal and
+automake scripts.  Currently, the relative path from bindir to datadir is
+hardcoded as ../share.
+
+Signed-off-by: Chris Larson <chris_larson@mentor.com>
+---
+ aclocal.in  |   22 ++++++++++++++++++++--
+ automake.in |   13 ++++++++++++-
+ 2 files changed, 32 insertions(+), 3 deletions(-)
+
+diff --git a/aclocal.in b/aclocal.in
+index 3448d7c..cd29779 100644
+--- a/aclocal.in
++++ b/aclocal.in
+@@ -29,7 +29,18 @@ eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
+
+ BEGIN
+ {
+-  my $perllibdir = $ENV{'perllibdir'} || '@datadir@/@PACKAGE@-@APIVERSION@';
++  use File::Basename;
++  use File::Spec::Functions "catfile";
++  use Cwd "abs_path";
++
++  my $bindir = dirname(abs_path($0));
++  my $prefix = dirname($bindir);
++  my $datadir = catfile($prefix, "share");
++  if (! -d $datadir) {
++    $datadir = "@datadir@";
++  }
++
++  my $perllibdir = $ENV{'perllibdir'} || $datadir . '/@PACKAGE@-@APIVERSION@';
+   unshift @INC, (split '@PATH_SEPARATOR@', $perllibdir);
+ }
+
+@@ -41,11 +52,18 @@ use Automake::XFile;
+ use Automake::FileUtils;
+ use File::Basename;
+ use File::stat;
++use File::Spec::Functions "catfile";
+ use Cwd;
+
++my $bindir = dirname(abs_path($0));
++my $prefix = dirname($bindir);
++my $datadir = catfile($prefix, "share");
++if (! -d $datadir) {
++  $datadir = "@datadir@"
++}
+ # Note that this isn't pkgdatadir, but a separate directory.
+ # Note also that the versioned directory is handled later.
+-$acdir = '@datadir@/aclocal';
++$acdir = $datadir . '/aclocal';
+ $default_acdir = $acdir;
+ # contains a list of directories, one per line, to be added
+ # to the dirlist in addition to $acdir, as if -I had been
+diff --git a/automake.in b/automake.in
+index 00a159a..341b773 100755
+--- a/automake.in
++++ b/automake.in
+@@ -31,7 +31,18 @@ package Language;
+
+ BEGIN
+ {
+-  my $perllibdir = $ENV{'perllibdir'} || '@datadir@/@PACKAGE@-@APIVERSION@';
++  use File::Basename;
++  use File::Spec::Functions "catfile";
++  use Cwd "abs_path";
++
++  my $bindir = dirname(abs_path($0));
++  my $prefix = dirname($bindir);
++  my $datadir = catfile($prefix, "share");
++  if (! -d $datadir) {
++    $datadir = "@datadir@";
++  }
++
++  my $perllibdir = $ENV{'perllibdir'} || $datadir . '/@PACKAGE@-@APIVERSION@';
+   unshift @INC, (split '@PATH_SEPARATOR@', $perllibdir);
+
+   # Override SHELL.  This is required on DJGPP so that system() uses
+--
+1.7.2.3
