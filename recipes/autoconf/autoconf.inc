@@ -32,5 +32,34 @@ do_compile () {
 	oe_runmake
 }
 
+SYSROOT_PREPROCESS_FUNCS_append_virtclass-native = " autoconf_fixup"
+
+_SYSROOT_DEST = "${SYSROOT_DESTDIR}${STAGING_DIR_HOST}"
+autoconf_fixup () {
+	create_wrapper ${_SYSROOT_DEST}${bindir}/autoconf \
+		AUTOM4TE=${bindir}/autom4te
+	create_wrapper ${_SYSROOT_DEST}${bindir}/autom4te \
+		autom4te_perllibdir=${datadir}/autoconf \
+		AC_MACRODIR=${datadir}/autoconf \
+		M4=${bindir}/m4
+	create_wrapper ${_SYSROOT_DEST}${bindir}/autoheader \
+		autom4te_perllibdir=${datadir}/autoconf \
+		AUTOM4TE=${bindir}/autom4te
+	create_wrapper ${_SYSROOT_DEST}${bindir}/autoreconf \
+		autom4te_perllibdir=${datadir}/autoconf \
+		AUTOM4TE=${bindir}/autom4te \
+		AUTOCONF=${bindir}/autoconf \
+		AUTOHEADER=${bindir}/autoheader
+	create_wrapper ${_SYSROOT_DEST}${bindir}/ifnames \
+		autom4te_perllibdir=${datadir}/autoconf
+	create_wrapper ${_SYSROOT_DEST}${bindir}/autoscan \
+		autom4te_perllibdir=${datadir}/autoconf \
+		AUTOM4TE=${bindir}/autom4te
+	create_wrapper ${_SYSROOT_DEST}${bindir}/autoupdate \
+		autom4te_perllibdir=${datadir}/autoconf \
+		AUTOM4TE=${bindir}/autom4te \
+		M4=${bindir}/m4
+}
+
 PARALLEL_MAKE = ""
 BBCLASSEXTEND = "native"
