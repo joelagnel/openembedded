@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.gnu.org/software/libtool/libtool.html"
 LICENSE = "GPLv2+"
 SECTION = "devel"
 
-INC_PR = "r27"
+INC_PR = "r28"
 
 FILESPATHPKG=. "libtool-${PV}:"
 
@@ -30,6 +30,7 @@ do_configure_prepend () {
 		export ac_cv_path_FGREP="${ac_cv_path_FGREP=${base_bindir}/grep -F}"
 	fi
 }
+
 do_compile_prepend () {
         # Sometimes this file doesn't get rebuilt, force the issue
         rm -f ${S}/libltdl/config/ltmain.sh
@@ -38,3 +39,23 @@ do_compile_prepend () {
 
 inherit autotools
 EXTRA_AUTORECONF = "--exclude=libtoolize"
+
+SYSROOT_PREPROCESS_FUNCS += "libtool_fixup"
+
+_SYSROOT_DEST = "${SYSROOT_DESTDIR}${STAGING_DIR_HOST}"
+libtool_fixup () {
+	if [ ! -e ${_SYSROOT_DEST}${bindir}/libtoolize ]; then
+		return
+	fi
+
+	sed -e 's,^pkgdatadir=${datadir}/libtool,pkgdatadir=$_lt_datadir/libtool,' \
+	    -e 's,^pkgltdldir=${datadir}/libtool,pkgltdldir=$_lt_datadir/libtool,' \
+	    -e 's,^aclocaldir=${datadir}/aclocal,aclocaldir=$_lt_datadir/aclocal,' \
+	    ${_SYSROOT_DEST}${bindir}/libtoolize > \
+	    ${_SYSROOT_DEST}${bindir}/libtoolize.new && \
+	        mv ${_SYSROOT_DEST}${bindir}/libtoolize.new \
+	           ${_SYSROOT_DEST}${bindir}/libtoolize
+	chmod +x ${_SYSROOT_DEST}${bindir}/libtoolize
+	create_wrapper ${_SYSROOT_DEST}${bindir}/libtoolize \
+	    _lt_datadir=${datadir}
+}
