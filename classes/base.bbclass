@@ -1,4 +1,5 @@
 BB_DEFAULT_TASK ?= "build"
+RM_WORK ?= "1"
 
 inherit patch
 inherit staging
@@ -284,9 +285,37 @@ base_do_package() {
 	:
 }
 
+python rmwork_stampfixer() {
+    # If we need to execute a task for a recipe, and that recipe has already
+    # had its workdir cleaned up, we need to wipe the stamps so it can
+    # reconstruct the source tree by re-running the tasks.
+
+    import glob
+
+    if isinstance(e, bb.event.StampUpdate):
+        for fn, task in e.targets:
+            stamp = "%s.do_build" % e.stampPrefix[fn]
+            if os.path.exists(stamp):
+                stamps = "%s.*" % e.stampPrefix[fn]
+                for path in glob.glob(stamps):
+                    oe.path.remove(path)
+}
+addhandler rmwork_stampfixer
+
+def clean_workdir(d):
+    import os.path
+    import oe.path
+
+    workdir = d.getVar("WORKDIR", True)
+    workfiles = filter(lambda p: p != "temp", os.listdir(workdir))
+    for path in workfiles:
+        oe.path.remove(os.path.join(workdir, path))
+
+python do_build () {
+    if d.getVar("RM_WORK", True):
+        clean_workdir(d)
+}
 addtask build
-do_build = ""
-do_build[func] = "1"
 
 python () {
     import exceptions
