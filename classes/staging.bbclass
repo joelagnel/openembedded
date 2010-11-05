@@ -117,7 +117,7 @@ do_populate_sysroot[dirs] = "${STAGING_DIR_TARGET}/${bindir} ${STAGING_DIR_TARGE
 			     ${STAGING_BINDIR_NATIVE} ${STAGING_LIBDIR_NATIVE} \
 			     ${STAGING_INCDIR_NATIVE} \
 			     ${STAGING_DATADIR} \
-			     ${S} ${B}"
+			     ${S}"
 
 # Could be compile but populate_sysroot and do_install shouldn't run at the same time
 addtask populate_sysroot after do_install

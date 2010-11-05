@@ -255,14 +255,14 @@ python build_summary() {
 addhandler build_summary
 
 addtask configure after do_unpack do_patch
-do_configure[dirs] = "${S} ${B}"
+do_configure[dirs] = "${S}"
 do_configure[deptask] = "do_populate_sysroot"
 base_do_configure() {
 	:
 }
 
 addtask compile after do_configure
-do_compile[dirs] = "${S} ${B}"
+do_compile[dirs] = "${S}"
 base_do_compile() {
 	if [ -e Makefile -o -e makefile -o -e GNUmakefile ]; then
 		oe_runmake || die "make failed"
@@ -272,7 +272,7 @@ base_do_compile() {
 }
 
 addtask install after do_compile
-do_install[dirs] = "${D} ${S} ${B}"
+do_install[dirs] = "${D} ${S}"
 # Remove and re-create ${D} so that is it guaranteed to be empty
 do_install[cleandirs] = "${D}"
 

@@ -28,6 +28,7 @@ DEPENDS_prepend = "${@autotools_deps(d)}"
 DEPENDS_virtclass-native_prepend = "${@autotools_deps(d)}"
 DEPENDS_virtclass-nativesdk_prepend = "${@autotools_deps(d)}"
 
+inherit objdir
 inherit siteinfo
 
 def _autotools_get_sitefiles(d):
