@@ -18,7 +18,7 @@ inherit autotools
 
 acpaths = "-I ."
 do_configure_prepend () {
-	install -m 0644 ${WORKDIR}/glibconfig-sysdefs.h glib-1.2.*/
+	install -m 0644 ${WORKDIR}/glibconfig-sysdefs.h ${S}/glib-1.2.*/
 }
 
 do_install_append() {

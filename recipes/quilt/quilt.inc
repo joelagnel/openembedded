@@ -11,3 +11,4 @@ SRC_URI = "http://download.savannah.gnu.org/releases/quilt/quilt-${PV}.tar.gz \
 	   "
 
 S = "${WORKDIR}/quilt-${PV}"
+B = "${S}"

@@ -4,6 +4,8 @@ LICENSE = "GPLv2"
 
 inherit kernel siteinfo
 
+B = "${S}"
+
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
 # Enable OABI compat for people stuck with obsolete userspace

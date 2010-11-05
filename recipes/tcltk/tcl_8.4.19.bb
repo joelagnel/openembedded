@@ -10,6 +10,7 @@ SRC_URI = "\
 #  file://fix-configure.patch;striplevel=2 \
 "
 S = "${WORKDIR}/tcl${PV}/unix"
+B = "${S}"
 
 inherit autotools
 
@@ -23,7 +24,7 @@ do_configure() {
 }
 
 do_compile_prepend() {
-	echo > ../compat/fixstrtod.c
+	echo > ${S}/../compat/fixstrtod.c
 }
 
 do_stage() {

@@ -19,6 +19,7 @@ SRC_URI[md5sum] = "7f123e53b3daaaba2478d3af5a0752e3"
 SRC_URI[sha256sum] = "6b090c1024038d0381e1ccfbd6d5c0f0e6ef205269ceb9d28bd7bd7ac5bbf4a7"
 
 S = "${WORKDIR}/tcl${PV}/unix"
+B = "${WORKDIR}/tcl${PV}/obj"
 SYSROOT_PREPROCESS_FUNCS =+ "tcl_sysroot"
 
 inherit autotools binconfig
@@ -26,7 +27,7 @@ inherit autotools binconfig
 EXTRA_OECONF = "--enable-threads"
 
 do_configure_append() {
-        echo > ../compat/fixstrtod.c
+        echo > ${S}/../compat/fixstrtod.c
 }
 
 do_compile_prepend_pn-tcl () {
@@ -37,10 +38,10 @@ do_install() {
         autotools_do_install
         # Stage a few extra headers to make tk happy
         install -d ${D}${includedir}/tcl-${PV}/generic
-        install -m 0644 ../generic/*.h ${D}${includedir}/tcl-${PV}/generic
-        install -m 0644 *.h ${D}${includedir}/tcl-${PV}/generic
+        install -m 0644 ${S}/../generic/*.h ${D}${includedir}/tcl-${PV}/generic
+        install -m 0644 ${S}/*.h ${D}${includedir}/tcl-${PV}/generic
         install -d ${D}${includedir}/tcl-${PV}/unix
-        install -m 0644 *Unix*.h ${D}${includedir}/tcl-${PV}/unix/
+        install -m 0644 ${S}/*Unix*.h ${D}${includedir}/tcl-${PV}/unix/
         rm -f ${D}${includedir}/regex.h
         ln -sf tclsh8.5 ${D}${bindir}/tclsh
 }

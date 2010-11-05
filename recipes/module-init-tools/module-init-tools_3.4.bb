@@ -8,7 +8,7 @@ bindir = "/bin"
 sbindir = "/sbin"
 
 do_configure_prepend() {
-	sed -i -e /MAN5\ =/d -e /MAN8\ =/d Makefile.am 
+	sed -i -e /MAN5\ =/d -e /MAN8\ =/d ${S}/Makefile.am 
 }
 
 do_install() {

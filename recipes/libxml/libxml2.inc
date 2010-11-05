@@ -28,7 +28,7 @@ export LDFLAGS += "-ldl"
 
 do_install_append() {
 	install -d ${D}${datadir}/aclocal
- 	install -m 0644 libxml.m4 ${D}${datadir}/aclocal
+ 	install -m 0644 ${S}/libxml.m4 ${D}${datadir}/aclocal
 	#this is need it by php during its install
 	install -d ${STAGING_BINDIR_CROSS}
 	install -m 0755 xml2-config ${STAGING_BINDIR_CROSS}/

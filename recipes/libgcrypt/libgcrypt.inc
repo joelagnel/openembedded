@@ -16,7 +16,7 @@ ARM_INSTRUCTION_SET = "arm"
 
 do_install_append() {
 	install -d ${D}/${libdir}/pkgconfig/
-	cp ${S}/src/*.pc ${D}/${libdir}/pkgconfig/
+	cp src/*.pc ${D}/${libdir}/pkgconfig/
 }
 
 BBCLASSEXTEND = "native"

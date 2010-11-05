@@ -16,18 +16,18 @@ inherit autotools
 do_install_docs () {
 	install -d -m 755 \
 		${D}${mandir}/man8 ${D}${mandir}/pl/man8
-	install -p -m 644 man/update-passwd.8 \
+	install -p -m 644 ${S}/man/update-passwd.8 \
 		${D}${mandir}/man8/
-	install -p -m 644 man/update-passwd.pl.8 \
+	install -p -m 644 ${S}/man/update-passwd.pl.8 \
 		${D}${mandir}/pl/man8/update-passwd.8
 	gzip -9 ${D}${mandir}/man8/* \
 		${D}${mandir}/pl/man8/*
 
 	install -d -m 755 ${D}${docdir}/${PN}
-	install -p -m 644 debian/changelog ${D}${docdir}/${PN}/
+	install -p -m 644 ${S}/debian/changelog ${D}${docdir}/${PN}/
 	gzip -9 ${D}${docdir}/${PN}/*
-	install -p -m 644 README ${D}${docdir}/${PN}/
-	install -p -m 644 debian/copyright ${D}${docdir}/${PN}/
+	install -p -m 644 ${S}/README ${D}${docdir}/${PN}/
+	install -p -m 644 ${S}/debian/copyright ${D}${docdir}/${PN}/
 }
 
 do_install () {
@@ -36,9 +36,9 @@ do_install () {
 	install -d -m 755 ${D}${sbindir}
 	install -p -m 755 update-passwd ${D}${sbindir}/
 	install -d -m 755 ${D}${datadir}/base-passwd
-	install -p -m 644 passwd.master \
+	install -p -m 644 ${S}/passwd.master \
 		${D}${datadir}/base-passwd/
-	install -p -m 644 group.master \
+	install -p -m 644 ${S}/group.master \
 		${D}${datadir}/base-passwd/
 }
 
