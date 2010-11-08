@@ -6,7 +6,7 @@ SRC_URI_virtclass-native += "file://run-with-tmp-session-bus.patch"
 
 do_install_virtclass-native_prepend() {
         install -d ${D}${datadir}/dbus
-        install -m 0644 dbus-bus-introspect.xml ${D}${datadir}/dbus
+        install -m 0644 ${S}/dbus-bus-introspect.xml ${D}${datadir}/dbus
 }
 
 SRC_URI[md5sum] = "cd0ab148fb0c786fc88be49d19971f50"

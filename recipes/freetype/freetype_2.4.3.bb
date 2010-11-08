@@ -21,17 +21,18 @@ LIBTOOL = "${HOST_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 
 do_configure() {
-	cd builds/unix
+	cd ${S}/builds/unix
 	libtoolize --force --copy
 	gnu-configize --force
 	aclocal -I .
 	autoconf
-	cd ${S}
+	cd ${B}
 	oe_runconf
 }
 
 do_compile_prepend() {
-	${BUILD_CC} -o objs/apinames src/tools/apinames.c
+	install -d objs
+	${BUILD_CC} -o objs/apinames ${S}/src/tools/apinames.c
 }
 
 BBCLASSEXTEND = "native"

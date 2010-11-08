@@ -10,6 +10,8 @@ SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
 
 inherit autotools binconfig
 
+B = "${S}"
+
 EXTRA_OECONF = " \
                 --enable-gnutls \
 		--enable-dbus \

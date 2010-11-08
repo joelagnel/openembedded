@@ -10,6 +10,8 @@ LEAD_SONAME = "libcupsdriver.so"
 
 inherit autotools binconfig
 
+B = "${S}"
+
 EXTRA_OECONF = " \
                 --enable-gnutls \
 		--enable-dbus \

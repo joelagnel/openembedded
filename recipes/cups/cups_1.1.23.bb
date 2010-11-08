@@ -10,6 +10,8 @@ SRC_URI = "ftp://ftp3.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
 
 inherit autotools binconfig
 
+B = "${S}"
+
 LDFLAGS += " -L${STAGING_LIBDIR} "
 
 do_compile () {

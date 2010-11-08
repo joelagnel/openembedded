@@ -7,6 +7,7 @@ INC_PR = "r5"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/${BPN}-${PV}.tar.gz;name=archive"
 S = "${WORKDIR}/${BPN}-${PV}"
+B = "${S}"
 
 inherit autotools pkgconfig binconfig
 

@@ -9,6 +9,8 @@ SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/acl/acl-${PV}.src.tar.gz"
 
 inherit autotools lib_package
 
+B = "${S}"
+
 TOPDIR[unexport] = "1"
 
 EXTRA_OECONF = " --enable-gettext=yes \
