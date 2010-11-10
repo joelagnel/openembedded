@@ -294,6 +294,8 @@ python rmwork_stampfixer() {
 
     if isinstance(e, bb.event.StampUpdate):
         for fn, task in e.targets:
+            if task == "do_build":
+                continue
             stamp = "%s.do_build" % e.stampPrefix[fn]
             if os.path.exists(stamp):
                 stamps = "%s.*" % e.stampPrefix[fn]
