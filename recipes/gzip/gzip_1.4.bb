@@ -14,16 +14,8 @@ inherit autotools
 
 BBCLASSEXTEND = "native"
 
+bindir = "${base_bindir}"
 alternatives = "gunzip gzip zcat"
-
-do_install () {
-    autotools_do_install
-    # Move files into /bin (FHS)
-    install -d ${D}${base_bindir}
-    for file in ${D}${bindir}/*; do
-        mv $file ${D}${base_bindir}/
-    done
-}
 
 do_install_append_pn-gzip () {
     for alternative in ${alternatives}; do
