@@ -21,11 +21,13 @@ def autotools_deps(d):
             not d.getVar('INHIBIT_DEFAULT_DEPS', True)):
             deps += 'libtool-cross '
 
-    return deps + 'gnu-config-native '
+    return deps + ' gnu-config-native'
 
-DEPENDS_prepend = "${@autotools_deps(d)}"
-DEPENDS_virtclass-native_prepend = "${@autotools_deps(d)}"
-DEPENDS_virtclass-nativesdk_prepend = "${@autotools_deps(d)}"
+AUTOTOOLS_DEPENDS = "${@autotools_deps(d)}"
+
+DEPENDS_prepend = "${AUTOTOOLS_DEPENDS} "
+DEPENDS_virtclass-native_prepend = "${AUTOTOOLS_DEPENDS} "
+DEPENDS_virtclass-nativesdk_prepend = "${AUTOTOOLS_DEPENDS} "
 
 autotools_do_configure () {
     autotools_do_bootstrap
