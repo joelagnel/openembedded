@@ -11,7 +11,7 @@ PR = "r4"
 
 S = "${WORKDIR}/cgt6x_${PV}"
 
-SRC_URI = "http://install.source.dir.local/ti_cgt_c6000_${PVwithdots}_setup_linux_x86.bin;name=cgt6xbin"
+SRC_URI = "file://${WORKDIR}/ti_cgt_c6000_${PVwithdots}_setup_linux_x86.bin"
 
 BINFILE="ti_cgt_c6000_${PVwithdots}_setup_linux_x86.bin"
 TI_BIN_UNPK_CMDS="Y:qY:workdir: : "
