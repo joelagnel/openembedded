@@ -24,6 +24,7 @@ ANGSTROM_EXTRA_INSTALL ?= ""
 IMAGE_INSTALL += " \
   task-omap-drivers \
   task-base-extended \
+  beagleboard-test-scripts \
   ${ANGSTROM_EXTRA_INSTALL} \
   ${IMAGE_SPLASH} \
   angstrom-task-gnome \
