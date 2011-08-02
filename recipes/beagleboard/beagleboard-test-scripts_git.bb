@@ -1,7 +1,7 @@
 ## Reminder:  The correct spacing for a variable is FOO = "BAR"  in : PR="r1"
 DESCRIPTION = "BeagleBoard test scripts"
 HOMEPAGE = "http://beagleboad.org/support"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "git://gitorious.org/~joelf/beagleboard-validation/validation-scripts.git;protocol=git \
 "
@@ -12,6 +12,10 @@ S = "${WORKDIR}/git"
 inherit update-rc.d
 INITSCRIPT_NAME = "flash-nand-fs.sh"
 INITSCRIPT_PARAMS = "start 99 2 3 4 5 ."
+
+FILES_${PN} += "/boot/user.txt \
+		/boot/uEnv.txt \
+"
 
 do_install() {
   TEST_FILES=" \
